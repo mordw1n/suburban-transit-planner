@@ -135,12 +135,15 @@ flowchart LR
 ### 5.3. Автомат состояний Circuit Breaker (State Diagram)
 
 ```mermaid
-stateDiagram-v2
-    [*] --> Closed
-    Closed --> Open : 5 ошибок подряд (timeout > 2.5с или HTTP 429/5xx)
-    Closed --> Closed : Успешный ответ от API Яндекса
-    Open --> HalfOpen : Истек таймаут восстановления (60 секунд)
-    Open --> Open : Запросы обслуживаются из fallback-кэша БД
-    HalfOpen --> Closed : Пробный запрос успешен
-    HalfOpen --> Open : Пробный запрос завершился ошибкой
+flowchart TD
+    Start([*]) --> Closed
+
+    Closed["<b>CLOSED (Штатный режим)</b><br/>Запросы отправляются к API Яндекса"]
+    Open["<b>OPEN (Аварийный режим)</b><br/>Внешние вызовы заблокированы, отдача из кэша БД"]
+    HalfOpen["<b>HALF-OPEN (Пробный режим)</b><br/>Проверка доступности внешнего сервиса"]
+
+    Closed -->|"5 ошибок подряд или таймаут > 2.5 с"| Open
+    Open -->|"Истек таймаут 60 секунд"| HalfOpen
+    HalfOpen -->|"Пробный запрос успешен"| Closed
+    HalfOpen -->|"Пробный запрос с ошибкой"| Open
 ```
