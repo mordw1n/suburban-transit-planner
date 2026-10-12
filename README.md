@@ -11,7 +11,7 @@
 ## 👥 Команда проекта (Группа 5130904/40108)
 
 * **Спиридонов Михаил Павлович** ([@mordw1n](https://github.com/mordw1n)) — *Backend, Data & Fault Tolerance Lead*
-* **Абу Блал Абдал Рахман** — *Frontend, UI/UX & Client Integration Lead*
+* **Абу Блал Абдал Рахман** ([@Xkoex](https://github.com/Xkoex)) — *Frontend, UI/UX & Client Integration Lead*
 
 ---
 
