@@ -1,5 +1,8 @@
+import logging
 from typing import List, Dict, Any
 from datetime import datetime, timedelta
+
+logger = logging.getLogger("transit.routes_calculator")
 
 SEED_STATIONS = [
     {
@@ -116,6 +119,8 @@ def calculate_routes(from_code: str, to_code: str) -> List[Dict[str, Any]]:
             st_from = next((s["title"] for s in SEED_STATIONS if s["code_yandex"] == item["from"]), item["from"])
             st_to = next((s["title"] for s in SEED_STATIONS if s["code_yandex"] == item["to"]), item["to"])
 
+            logger.info(f"[DIRECT MATCH] {item['train']} ({item['type']}): {st_from} -> {st_to}, {item['dep']}-{item['arr']}, status={item.get('status')}")
+
             results.append({
                 "option_id": f"direct-{item['train']}-{item['dep']}",
                 "is_direct": True,
@@ -165,6 +170,11 @@ def calculate_routes(from_code: str, to_code: str) -> List[Dict[str, Any]]:
                     st_from = next((s["title"] for s in SEED_STATIONS if s["code_yandex"] == leg1["from"]), leg1["from"])
                     st_to = next((s["title"] for s in SEED_STATIONS if s["code_yandex"] == leg2["to"]), leg2["to"])
                     is_tight = wait_time < 7
+
+                    logger.info(
+                        f"[TRANSFER MATCH] Hub: {junction['title']}, Leg1: {leg1['train']} (arr {leg1['arr']}), "
+                        f"Leg2: {leg2['train']} (dep {leg2['dep']}), Wait: {wait_time}m, Buffer: 7m, Tight: {is_tight}"
+                    )
 
                     results.append({
                         "option_id": f"transfer-{leg1['train']}-{leg2['train']}-{leg1['dep']}",

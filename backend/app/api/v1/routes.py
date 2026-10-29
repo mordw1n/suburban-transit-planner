@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 from fastapi import APIRouter, Query, HTTPException
 from app.config import settings
@@ -7,6 +8,7 @@ from app.yandex_client import yandex_client
 from app.circuit_breaker import yandex_breaker
 from app.redis_client import get_cached, set_cached
 
+logger = logging.getLogger("transit.routes")
 router = APIRouter(prefix="/routes", tags=["Routes"])
 
 @router.get("/search", response_model=RouteSearchResponse)
@@ -27,8 +29,10 @@ async def search_routes(
     is_degraded = yandex_breaker.is_degraded()
 
     if cached_routes:
+        logger.info(f"[CACHE HIT] Key '{cache_key}' found in Redis. Returned {len(cached_routes)} routes instantly.")
         routes_data = cached_routes
     else:
+        logger.info(f"[CACHE MISS] Key '{cache_key}' not in Redis. Calculating routes via graph engine...")
         routes_data = None
         if settings.YANDEX_API_KEY:
             yandex_res = await yandex_client.get_search_schedule(from_code, to_code, date_str)
@@ -38,6 +42,7 @@ async def search_routes(
         if not routes_data:
             routes_data = calculate_routes(from_code, to_code)
 
+        logger.info(f"[CACHE STORE] Stored {len(routes_data)} calculated routes in Redis with TTL=300s.")
         await set_cached(cache_key, routes_data, ttl_seconds=300)
 
     system_status = "DEGRADED_OFFLINE" if is_degraded else "OPERATIONAL"
