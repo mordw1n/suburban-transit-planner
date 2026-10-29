@@ -30,3 +30,12 @@ node_modules/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Frontend build
+dist/
+frontend/dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
