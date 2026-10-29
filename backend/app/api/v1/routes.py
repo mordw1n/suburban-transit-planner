@@ -1,7 +1,9 @@
 from datetime import date
 from fastapi import APIRouter, Query, HTTPException
+from app.config import settings
 from app.schemas import RouteSearchResponse, StationOut
 from app.routes_calculator import SEED_STATIONS, calculate_routes
+from app.yandex_client import yandex_client
 from app.circuit_breaker import yandex_breaker
 from app.redis_client import get_cached, set_cached
 
@@ -23,13 +25,22 @@ async def search_routes(
     cached_routes = await get_cached(cache_key)
 
     is_degraded = yandex_breaker.is_degraded()
-    system_status = "DEGRADED_OFFLINE" if is_degraded else "OPERATIONAL"
 
     if cached_routes:
         routes_data = cached_routes
     else:
-        routes_data = calculate_routes(from_code, to_code)
+        routes_data = None
+        if settings.YANDEX_API_KEY:
+            yandex_res = await yandex_client.get_search_schedule(from_code, to_code, date_str)
+            if not yandex_res:
+                is_degraded = True
+
+        if not routes_data:
+            routes_data = calculate_routes(from_code, to_code)
+
         await set_cached(cache_key, routes_data, ttl_seconds=300)
+
+    system_status = "DEGRADED_OFFLINE" if is_degraded else "OPERATIONAL"
 
     return RouteSearchResponse(
         from_station=StationOut(**st_from),
