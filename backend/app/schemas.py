@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class StationOut(BaseModel):
     id: str
     code_yandex: str
+    legacy_code: Optional[str] = None
     title: str
     direction: str
     latitude: Optional[float] = None
