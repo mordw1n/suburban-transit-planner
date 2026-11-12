@@ -39,3 +39,8 @@ frontend/dist/
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
+.coverage
+*.xml
+coverage_html/
+*.log
