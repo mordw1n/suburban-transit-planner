@@ -1,0 +1,16 @@
+{
+  "total_requests": 100,
+  "concurrency": 20,
+  "success_rate_percent": 100.0,
+  "total_duration_sec": 0.248,
+  "throughput_rps": 403.2,
+  "latency_ms": {
+    "avg": 2.35,
+    "min": 1.95,
+    "max": 38.5,
+    "p50": 2.15,
+    "p90": 2.62,
+    "p95": 3.01,
+    "p99": 3.98
+  }
+}
