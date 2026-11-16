@@ -1,0 +1,122 @@
+services:
+  transit-postgres:
+    image: postgres:16-alpine
+    container_name: transit-postgres-prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-transit_planner}
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-transit_planner}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - transit-backend-net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  transit-redis:
+    image: redis:7-alpine
+    container_name: transit-redis-prod
+    restart: always
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis_data_prod:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - transit-backend-net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  transit-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: suburban-transit-backend:latest
+    container_name: transit-backend-prod
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@transit-postgres:5432/${POSTGRES_DB:-transit_planner}
+      - REDIS_URL=redis://transit-redis:6379/0
+      - YANDEX_API_KEY=${YANDEX_API_KEY:-9767995c-25ed-4c04-a367-0a8368dee2e2}
+      - YANDEX_API_BASE_URL=https://api.rasp.yandex.net/v3.0
+      - CIRCUIT_BREAKER_FAIL_MAX=5
+      - CIRCUIT_BREAKER_RESET_TIMEOUT=60
+    depends_on:
+      transit-postgres:
+        condition: service_healthy
+      transit-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    ports:
+      - "8000:8000"
+    networks:
+      - transit-backend-net
+      - transit-frontend-net
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+  transit-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: suburban-transit-frontend:latest
+    container_name: transit-frontend-prod
+    restart: always
+    ports:
+      - "80:80"
+      - "3000:80"
+    depends_on:
+      - transit-backend
+    networks:
+      - transit-frontend-net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data_prod:
+  redis_data_prod:
+
+networks:
+  transit-backend-net:
+    driver: bridge
+  transit-frontend-net:
+    driver: bridge
