@@ -10,13 +10,13 @@ export async function fetchStations(): Promise<Station[]> {
   } catch (err) {
     console.warn('API error, falling back to local seed stations:', err);
     return [
-      { id: '1', code_yandex: 's9600370', title: 'Финляндский вокзал', direction: 'Финляндское', is_junction: true },
-      { id: '2', code_yandex: 's9600371', title: 'Выборг', direction: 'Финляндское', is_junction: false },
-      { id: '3', code_yandex: 's9600372', title: 'Зеленогорск', direction: 'Финляндское', is_junction: true },
-      { id: '4', code_yandex: 's9600373', title: 'Девяткино', direction: 'Приозерское', is_junction: true },
-      { id: '5', code_yandex: 's9600375', title: 'Приозерск', direction: 'Приозерское', is_junction: false },
-      { id: '6', code_yandex: 's9600377', title: 'Балтийский вокзал', direction: 'Балтийское', is_junction: true },
-      { id: '7', code_yandex: 's9600376', title: 'Гатчина-Балтийская', direction: 'Балтийское', is_junction: false }
+      { id: 'st-finlyandsky', code_yandex: 's9602497', title: 'Финляндский вокзал', direction: 'Финляндское', is_junction: true },
+      { id: 'st-vyborg', code_yandex: 's9603175', title: 'Выборг', direction: 'Финляндское', is_junction: false },
+      { id: 'st-zelenogorsk', code_yandex: 's9602725', title: 'Зеленогорск', direction: 'Финляндское', is_junction: true },
+      { id: 'st-devyatkino', code_yandex: 's9603876', title: 'Девяткино', direction: 'Приозерское', is_junction: true },
+      { id: 'st-priozersk', code_yandex: 's9603177', title: 'Приозерск', direction: 'Приозерское', is_junction: false },
+      { id: 'st-baltiysky', code_yandex: 's9602498', title: 'Балтийский вокзал', direction: 'Балтийское', is_junction: true },
+      { id: 'st-gatchina', code_yandex: 's9602758', title: 'Гатчина-Балтийская', direction: 'Балтийское', is_junction: false }
     ];
   }
 }

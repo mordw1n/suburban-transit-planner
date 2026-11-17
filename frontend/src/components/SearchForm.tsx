@@ -8,8 +8,8 @@ interface SearchFormProps {
 }
 
 export const SearchForm: React.FC<SearchFormProps> = ({ stations, onSearch, isLoading }) => {
-  const [fromCode, setFromCode] = useState<string>('s9600370');
-  const [toCode, setToCode] = useState<string>('s9600371');
+  const [fromCode, setFromCode] = useState<string>('s9602497');
+  const [toCode, setToCode] = useState<string>('s9602725');
   const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
   const handleSubmit = (e: React.FormEvent) => {

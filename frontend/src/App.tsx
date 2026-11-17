@@ -23,7 +23,7 @@ export const App: React.FC = () => {
       const dls = await fetchLiveDelays();
       setDelays(dls);
 
-      handleSearch('s9600370', 's9600371', new Date().toISOString().split('T')[0]);
+      handleSearch('s9602497', 's9602725', new Date().toISOString().split('T')[0]);
     }
     loadInitialData();
   }, []);

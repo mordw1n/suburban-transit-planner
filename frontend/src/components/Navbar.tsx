@@ -11,7 +11,7 @@ export const Navbar: React.FC = () => {
           <div>
             <h1 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
               Suburban Transit Planner
-              <span className="text-xs bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded-full font-mono">MVP</span>
+              <span className="text-xs bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded-full font-mono">v1.0.0 Release</span>
             </h1>
             <p className="text-xs text-slate-400">Мультимодальное планирование поездок СПб и ЛО</p>
           </div>

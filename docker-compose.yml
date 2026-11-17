@@ -12,7 +12,8 @@ services:
     environment:
       - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/transit_planner
       - REDIS_URL=redis://redis:6379/0
-      - YANDEX_API_KEY=${YANDEX_API_KEY:-}
+      - YANDEX_API_KEY=${YANDEX_API_KEY:-9767995c-25ed-4c04-a367-0a8368dee2e2}
+      - YANDEX_API_BASE_URL=https://api.rasp.yandex.net/v3.0
     depends_on:
       db:
         condition: service_healthy
@@ -24,7 +25,7 @@ services:
     container_name: transit-postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

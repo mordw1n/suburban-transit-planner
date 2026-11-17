@@ -1,6 +1,7 @@
 import sys
 import json
 import logging
+import asyncio
 from datetime import datetime
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -30,8 +31,15 @@ logger = logging.getLogger("transit.main")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Starting transit service...")
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    for attempt in range(5):
+        try:
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+            logger.info("Database schema synchronized successfully.")
+            break
+        except Exception as e:
+            logger.warning(f"Database connection attempt {attempt+1}/5 failed: {e}. Retrying in 2s...")
+            await asyncio.sleep(2)
     await init_redis_pool()
     yield
     logger.info("Stopping transit service...")
@@ -57,6 +65,7 @@ app.include_router(routes_router, prefix=settings.API_V1_PREFIX)
 app.include_router(delays_router, prefix=settings.API_V1_PREFIX)
 
 @app.get("/healthz")
+@app.get("/api/v1/health")
 async def health_check():
     return {
         "status": "healthy",
