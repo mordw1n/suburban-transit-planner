@@ -4,7 +4,6 @@
 **Команда проекта**:
 * Спиридонов Михаил Павлович ([@mordw1n](https://github.com/mordw1n), гр. 5130904/40108) — *Backend & Architecture Lead*
 * Абу Блал Абдал Рахман ([@Xkoex](https://github.com/Xkoex), гр. 5130904/40108) — *Frontend & UI/UX Lead*
-**Преподаватель**: Юркин В. А.
 
 ---
 

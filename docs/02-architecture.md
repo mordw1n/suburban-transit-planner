@@ -4,7 +4,6 @@
 **Команда проекта**:
 * Спиридонов Михаил Павлович ([@mordw1n](https://github.com/mordw1n), гр. 5130904/40108) — *Backend & Architecture Lead*
 * Абу Блал Абдал Рахман ([@Xkoex](https://github.com/Xkoex), гр. 5130904/40108) — *Frontend & UI/UX Lead*
-**Преподаватель**: Юркин В. А.
 
 ---
 
@@ -82,17 +81,17 @@
 ```mermaid
 flowchart TD
     subgraph Users ["Пользователи"]
-        Passenger["👤 Пассажир<br/>Пользователь электропоездов СПб и ЛО"]
-        Admin["👤 Диспетчер / Администратор<br/>Мониторинг квот и инцидентов"]
+        Passenger["Пассажир<br/>Пользователь электропоездов СПб и ЛО"]
+        Admin["Диспетчер / Администратор<br/>Мониторинг квот и инцидентов"]
     end
 
     subgraph SystemScope ["Граница системы"]
-        Planner["🚆 Suburban Transit Planner<br/>Сервис расчета пересадок, табло и учета задержек"]
+        Planner["Suburban Transit Planner<br/>Сервис расчета пересадок, табло и учета задержек"]
     end
 
     subgraph ExternalSystems ["Внешние системы"]
-        YandexAPI["🌐 API Яндекс Расписания<br/>Суточные графики и технологические окна"]
-        TelegramAPI["📱 Telegram Bot API (опционально)<br/>Канал оперативных push-уведомлений"]
+        YandexAPI["API Яндекс Расписания<br/>Суточные графики и технологические окна"]
+        TelegramAPI["Telegram Bot API (опционально)<br/>Канал оперативных push-уведомлений"]
     end
 
     Passenger -->|"Поиск маршрутов, онлайн-табло (HTTPS / JSON)"| Planner
@@ -109,24 +108,24 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    User["👤 Пассажир (Браузер)"]
+    User["Пассажир (Браузер)"]
 
     subgraph ClientLayer ["Клиентский уровень"]
-        SPA["💻 Web SPA (Frontend)<br/>React 18, TypeScript, Tailwind, Vite"]
+        SPA["Web SPA (Frontend)<br/>React 18, TypeScript, Tailwind, Vite"]
     end
 
     subgraph ServerLayer ["Серверный уровень (Docker)"]
-        Backend["⚙️ API Server (Backend)<br/>Python 3.12, FastAPI, aiobreaker, SQLAlchemy"]
-        Worker["⏱️ Scheduler & Sync Worker<br/>AsyncIO Task (Ночной прогрев кэша)"]
+        Backend["API Server (Backend)<br/>Python 3.12, FastAPI, aiobreaker, SQLAlchemy"]
+        Worker["Scheduler & Sync Worker<br/>AsyncIO Task (Ночной прогрев кэша)"]
     end
 
     subgraph DataLayer ["Уровень данных"]
-        Redis[("⚡ Redis 7 Alpine<br/>Кэш расписаний 24ч и Circuit Breaker")]
-        Postgres[("🗄️ PostgreSQL 16 Alpine<br/>Базовые графики, станции, история задержек")]
+        Redis[("Redis 7 Alpine<br/>Кэш расписаний 24ч и Circuit Breaker")]
+        Postgres[("PostgreSQL 16 Alpine<br/>Базовые графики, станции, история задержек")]
     end
 
     subgraph External ["Внешние сервисы"]
-        YandexAPI["🌐 API Яндекс Расписания"]
+        YandexAPI["API Яндекс Расписания"]
     end
 
     User -->|"HTTPS"| SPA
